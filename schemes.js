@@ -1,0 +1,31 @@
+module.exports = { schemesData: [
+  // == Farmer Schemes ==
+  { id: 'F01', title: 'PM Kisan Samman Nidhi', category: 'Farmer', state: 'All India', minAge: 18, caste: 'Any', maxIncome: 200000, disability: 'No', official_link: 'https://pmkisan.gov.in/', description: 'Direct income support of ₹6,000 per year to small and marginal farmer families.' },
+  { id: 'F02', title: 'Kisan Credit Card (KCC)', category: 'Farmer', state: 'All India', minAge: 18, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://www.sbi.co.in/web/agri-rural/agriculture-banking/crop-finance/kisan-credit-card', description: 'Provides affordable credit for farmers for their farming and other needs.' },
+  { id: 'F03', title: 'Pradhan Mantri Fasal Bima Yojana (PMFBY)', category: 'Farmer', state: 'All India', minAge: 18, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://pmfby.gov.in/', description: 'An insurance service for farmers for their yields.' },
+
+  // == Student Schemes ==
+  { id: 'S01', title: 'Rajasthan Post-Matric Scholarship', category: 'Student', state: 'Rajasthan', minAge: 16, caste: 'SC', maxIncome: 250000, disability: 'No', official_link: 'https://sje.rajasthan.gov.in/', description: 'Post-matriculation scholarship for SC/ST/OBC students of Rajasthan.' },
+  { id: 'S02', title: 'National Means Cum-Merit Scholarship', category: 'Student', state: 'All India', minAge: 13, caste: 'Any', maxIncome: 350000, disability: 'No', official_link: 'https://scholarships.gov.in/', description: 'Scholarship for meritorious students of economically weaker sections to arrest their drop-out at class VIII.' },
+  { id: 'S03', title: 'CBSE Merit Scholarship for Single Girl Child', category: 'Student', state: 'All India', minAge: 15, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://www.cbse.gov.in/cbsenew/scholarships.html', description: 'Supports post-matric education for single girl children who have passed CBSE Class X.' },
+  { id: 'S04', title: 'Prime Minister\'s Scholarship Scheme (PMSS)', category: 'Student', state: 'All India', minAge: 17, caste: 'Any', maxIncome: 600000, disability: 'No', official_link: 'https://www.desw.gov.in/scholarship', description: 'Promoting higher technical and professional education for the dependent wards of Ex-Servicemen / Ex-Coast Guard personnel.' },
+
+  // == Women Schemes ==
+  { id: 'W01', title: 'Pradhan Mantri Ujjwala Yojana', category: 'Women', state: 'All India', minAge: 18, caste: 'Any', maxIncome: 250000, disability: 'No', official_link: 'https://www.pmuy.gov.in/', description: 'Providing free LPG connections to women from below poverty line (BPL) households.' },
+  { id: 'W02', title: 'Mukhyamantri Kanyadan Yojana', category: 'Women', state: 'Rajasthan', minAge: 18, caste: 'Any', maxIncome: 150000, disability: 'No', official_link: 'https://sje.rajasthan.gov.in/schemes/Kanyadan.html', description: 'Financial assistance for the marriage of daughters from poor families.' },
+  { id: 'W03', title: 'Beti Bachao Beti Padhao Scheme', category: 'Women', state: 'All India', minAge: 0, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://wcd.nic.in/bbbp-schemes', description: 'Aims to address the declining Child Sex Ratio (CSR) and related issues of women empowerment.' },
+
+  // == Health Schemes ==
+  { id: 'H01', title: 'Ayushman Bharat (PMJAY)', category: 'Health', state: 'All India', minAge: 0, caste: 'Any', maxIncome: 250000, disability: 'Any', official_link: 'https://pmjay.gov.in/', description: 'National Health Protection Scheme, which provides a health insurance cover of Rs. 5 lakhs per family per year.' },
+  { id: 'H02', title: 'Janani Shishu Suraksha Karyakram (JSSK)', category: 'Health', state: 'All India', minAge: 0, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://nhm.gov.in/index1.php?lang=1&level=2&sublinkid=841&lid=221', description: 'Entitles all pregnant women delivering in public health institutions to absolutely free and no expense delivery.' },
+
+  // == Business & Employment Schemes ==
+  { id: 'B01', title: 'Pradhan Mantri MUDRA Yojana (PMMY)', category: 'Business', state: 'All India', minAge: 18, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://www.mudra.org.in/', description: 'Provides loans up to 10 lakh to non-corporate, non-farm small/micro enterprises.' },
+  { id: 'B02', title: 'Startup India Seed Fund Scheme', category: 'Business', state: 'All India', minAge: 18, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://www.startupindia.gov.in/content/sih/en/funding/seed-funding-scheme.html', description: 'Aims to provide financial assistance to startups for proof of concept, prototype development, product trials, etc.' },
+  { id: 'B03', title: 'MGNREGA', category: 'Employment', state: 'All India', minAge: 18, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://nrega.nic.in/', description: 'Guarantees 100 days of wage employment in a financial year to a rural household whose adult members volunteer to do unskilled manual work.' },
+
+  // == General & Disability Schemes ==
+  { id: 'G01', title: 'Atal Pension Yojana (APY)', category: 'Pension', state: 'All India', minAge: 18, caste: 'Any', maxIncome: null, disability: 'No', official_link: 'https://www.npscra.nsdl.co.in/scheme-details.php', description: 'A pension scheme for citizens of India, focused on the unorganised sector workers.' },
+  { id: 'D01', title: 'Disability Pension Scheme', category: 'Disability', state: 'All India', minAge: 18, caste: 'Any', maxIncome: 100000, disability: 'Yes', official_link: 'https://disabilityaffairs.gov.in/', description: 'Monthly pension for citizens with a certain percentage of disability.' },
+  { id: 'G02', title: 'Pradhan Mantri Awas Yojana (PMAY)', category: 'Housing', state: 'All India', minAge: 18, caste: 'Any', maxIncome: 1800000, disability: 'No', official_link: 'https://pmaymis.gov.in/', description: 'An initiative by Government of India in which affordable housing will be provided to the urban poor.' },
+]};
