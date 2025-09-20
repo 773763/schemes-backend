@@ -1,7 +1,7 @@
 // const puppeteer = require('puppeteer'); // <-- YEH LINE HUMNE HATA DI
 
 const Scheme = require('./schemes.js'); // Humara main Mongoose Model bilkul sahi hai
-
+const Notification = require('./models/Notification.js'); // YEH LINE ADD KAREIN
 // Function 1 (PIB Scraper)
 async function scrapeAndSaveSchemes() {
   let browser;
@@ -112,6 +112,20 @@ async function scrapeSJEWebsite() {
               official_link: item.link_url,
            });
            await newScheme.save();
+           console.log('New scheme saved to database.');
+
+// === YEH NAYA CODE ADD KAREIN ===
+// Nayi notification bhi banayein
+const notification = new Notification({
+    title_en: "New Scheme Added!",
+    title_hi: "नई योजना जोड़ी गई!",
+    message_en: `The scheme '${newScheme.title_en}' has been added.`,
+    message_hi: `योजना '${newScheme.title_hi}' जोड़ दी गई है।`,
+    icon: 'bullhorn-variant',
+    link: newScheme.official_link // Scheme ka link notification se jodein
+});
+await notification.save();
+console.log('New notification created.');
         }
     }
 

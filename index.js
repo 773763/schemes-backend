@@ -1,3 +1,4 @@
+const Notification = require('./models/Notification.js');
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -94,7 +95,7 @@ app.get('/api/schemes/latest', async (req, res) => {
   }
 });
 
-app.get('/api/seed-database', async (req, res) => {
+app.post('/api/seed-database', async (req, res) => {
     try {
         await Scheme.deleteMany({});
         await Scheme.insertMany(schemesData);
@@ -113,7 +114,17 @@ cron.schedule('0 5 * * *', () => {
     scheduled: true,
     timezone: "Asia/Kolkata"
 });
-
+  // === NAYI NOTIFICATION API ROUTE ===
+app.get('/api/notifications', async (req, res) => {
+    try {
+        // Database se saari notifications laayein, sabse nayi upar
+        const notifications = await Notification.find().sort({ createdAt: -1 });
+        res.json(notifications);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching notifications", error: err });
+    }
+});
+// === YEH NAYA TEST ROUTE ADD KAREIN ===
 app.listen(PORT, () => {
   console.log(`Server is running successfully on http://localhost:${PORT}`);
 });
