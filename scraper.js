@@ -1,34 +1,30 @@
-const puppeteer = require('puppeteer');
-const mongoose = require('mongoose');
+// const puppeteer = require('puppeteer'); // <-- YEH LINE HUMNE HATA DI
 
+const Scheme = require('./schemes.js'); // Humara main Mongoose Model bilkul sahi hai
+
+// Function 1 (PIB Scraper)
 async function scrapeAndSaveSchemes() {
   let browser;
+  console.log('[Auto-Scraper] Task starting... Launching browser...');
+  
   try {
-    // IMPORTANT: Make sure this has your correct password
-    const DB_CONNECTION_STRING = "mongodb+srv://prajapatvishnu7737:VISHNU7737@clxkotcxn8ccluster0.oyho2vj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-    await mongoose.connect(DB_CONNECTION_STRING);
+    // NAYA FIX: Puppeteer ko function ke andar dynamically import karein
+    const { default: puppeteer } = await import('puppeteer'); 
 
-    const schemeSchema = new mongoose.Schema({
-      id: String, title: String, category: String, state: String, minAge: Number,
-      caste: String, maxIncome: Number, disability: String, official_link: String, description: String,
+    browser = await puppeteer.launch({ 
+        headless: true, 
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
     });
-    const Scheme = mongoose.models.Scheme || mongoose.model('Scheme', schemeSchema);
-    
-    console.log('[Auto-Scraper] Database connected. Launching browser...');
-    browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
     const page = await browser.newPage();
-
     await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36');
     
     const TARGET_URL = 'https://pib.gov.in/AllRelease.aspx';
     console.log(`[Auto-Scraper] Navigating to ${TARGET_URL}...`);
     await page.goto(TARGET_URL, { waitUntil: 'networkidle2' });
 
-    // ==> SIMPLIFIED AND MORE ROBUST SELECTOR
-    await page.waitForSelector('a.heading', { timeout: 15000 }); // Wait a bit longer for the links with class 'heading'
+    await page.waitForSelector('a.heading', { timeout: 15000 });
 
     const scrapedReleases = await page.$$eval('a.heading', links => {
-      // Get the first 15 links found
       return links.slice(0, 15).map(link => ({
         title: link.innerText.trim(),
         url: link.href,
@@ -42,23 +38,25 @@ async function scrapeAndSaveSchemes() {
         if (item.title && item.url) {
           const existingScheme = await Scheme.findOne({ official_link: item.url });
           if (!existingScheme) {
-            const newScheme = {
-              id: `scraped-${Date.now()}-${item.title.slice(0, 10).replace(/\s/g, '-')}`,
-              title: `Press Release: ${item.title}`,
-              official_link: item.url,
-              category: 'Announcement',
-              description: `Government press release published on PIB. Details available at the official link.`,
-              state: 'All India', minAge: 0, caste: 'Any', maxIncome: null, disability: 'Any',
-            };
-            console.log(`[Auto-Scraper] Saving new item: ${newScheme.title}`);
-            const schemeDocument = new Scheme(newScheme);
-            await schemeDocument.save();
+            const newScheme = new Scheme({
+                title_en: `Press Release: ${item.title}`,
+                title_hi: `प्रेस विज्ञप्ति: ${item.title}`,
+                description_en: "Government press release published on PIB. Details available at the official link.",
+                description_hi: "पीआईबी पर प्रकाशित सरकारी प्रेस विज्ञप्ति। विवरण आधिकारिक लिंक पर उपलब्ध है।",
+                category: "Announcement",
+                applicable_states: ["All India"],
+                official_link: item.url,
+                eligibility_en: "N/A",
+                eligibility_hi: "लागू नहीं"
+            });
+            console.log(`[Auto-Scraper] Saving new item: ${newScheme.title_en}`);
+            await newScheme.save();
           }
         }
       }
       console.log('[Auto-Scraper] Database update check complete!');
     } else {
-      console.log('[Auto-Scraper] No new items found to add. The website structure may have changed.');
+      console.log('[Auto-Scraper] No new items found to add.');
     }
 
   } catch (error) {
@@ -68,9 +66,62 @@ async function scrapeAndSaveSchemes() {
       await browser.close();
       console.log('[Auto-Scraper] Browser closed.');
     }
-    await mongoose.disconnect();
-    console.log('[Auto-Scraper] Database disconnected.');
   }
 }
 
-module.exports = { scrapeAndSaveSchemes };
+
+// Function 2 (SJE Scraper)
+async function scrapeSJEWebsite() {
+  let browser;
+  console.log('[Auto-Scraper] STARTING: SJE Rajasthan Portal');
+  
+  try {
+    // NAYA FIX: Puppeteer ko yahaan bhi dynamically import karein
+    const { default: puppeteer } = await import('puppeteer');
+
+    browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] });
+    const page = await browser.newPage();
+    
+    const pageUrl = 'https://sje.rajasthan.gov.in/Default.aspx?Page=Schemes';
+    await page.goto(pageUrl, { waitUntil: 'networkidle2' });
+
+    const selectorForAllLinks = '#ContentPlaceHolder1_PageContent > tbody > tr > td > div > div.mrgn_10 > table > tbody > tr > td:nth-child(2) > a';
+    await page.waitForSelector(selectorForAllLinks);
+
+    const schemesFromPage = await page.$$eval(selectorForAllLinks, (allLinks) => {
+        return allLinks.map(link => ({
+            title: link.innerText.trim(), 
+            link_url: link.href
+        }));
+    });
+
+    console.log(`[Auto-Scraper] Found ${schemesFromPage.length} schemes on SJE Portal.`);
+
+    for (const item of schemesFromPage) {
+        const existing = await Scheme.findOne({ official_link: item.link_url });
+
+        if (!existing && item.title) {
+           console.log(`[Auto-Scraper] NEW SJE SCHEME: ${item.title}`);
+           const newScheme = new Scheme({
+              title_en: item.title,
+              title_hi: item.title,
+              description_en: 'Details available on SJE portal.',
+              description_hi: 'विवरण SJE पोर्टल पर उपलब्ध है।',
+              category: 'Student', 
+              applicable_states: ['Rajasthan'],
+              official_link: item.link_url,
+           });
+           await newScheme.save();
+        }
+    }
+
+  } catch (err) {
+    console.error('Error scraping SJE:', err.message);
+  } finally {
+    if (browser) await browser.close();
+    console.log('[Auto-Scraper] FINISHED: SJE Rajasthan Portal');
+  }
+}
+
+// Dono functions ko export karein (yeh line pehle jaisi hi hai)
+module.exports = { scrapeAndSaveSchemes, scrapeSJEWebsite };
