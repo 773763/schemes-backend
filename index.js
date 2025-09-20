@@ -108,7 +108,7 @@ console.log('Scheduler enabled: Will run scraping tasks daily at 5:00 AM.');
 cron.schedule('0 5 * * *', () => {
     console.log('RUNNING CRON JOB: Calling all scrapers...');
     scrapeAndSaveSchemes();
-    scrapeSJEWebsite();
+   // scrapeSJEWebsite();
 }, {
     scheduled: true,
     timezone: "Asia/Kolkata"
