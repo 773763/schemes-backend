@@ -94,7 +94,7 @@ app.get('/api/schemes/latest', async (req, res) => {
   }
 });
 
-app.post('/api/seed-database', async (req, res) => {
+app.get('/api/seed-database', async (req, res) => {
     try {
         await Scheme.deleteMany({});
         await Scheme.insertMany(schemesData);
